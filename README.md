@@ -57,8 +57,28 @@ That writes:
 
 - `dist/index.html`
 - `dist/jobs.json`
+- `dist/.nojekyll`
 
 You can open `dist/index.html` locally, or upload the `dist/` folder to a static host like GitHub Pages, Cloudflare Pages, or Netlify and share the link.
+
+## GitHub Pages
+
+This repo includes `.github/workflows/pages.yml` to deploy the exported `dist/` folder to GitHub Pages.
+
+Important:
+
+- The workflow deploys the committed `dist/` folder; it does not scrape LinkedIn on GitHub.
+- Refresh data locally first, then export again before pushing:
+
+```powershell
+.\scripts\auto_run_linkedin.ps1
+.\scripts\export_static.ps1
+git add dist
+git commit -m "Update exported site"
+git push
+```
+
+- In the GitHub repo, set `Settings -> Pages -> Build and deployment -> Source` to `GitHub Actions` once.
 
 ## Notes
 

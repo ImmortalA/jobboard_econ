@@ -3,8 +3,9 @@ $ErrorActionPreference = "Stop"
 # Auto workflow:
 # 1) Stop any existing server on common ports
 # 2) Scrape LinkedIn via jobsparser + import into SQLite
-# 3) Start FastAPI/uvicorn on the first free port
-# 4) Open the homepage in the default browser
+# 3) Export the current filtered board as a static site
+# 4) Start FastAPI/uvicorn on the first free port
+# 5) Open the homepage in the default browser
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 Set-Location $repoRoot
@@ -17,6 +18,7 @@ if (!(Test-Path $venvPython)) {
 $resultsWanted = 100
 $hoursOld = 720 # ~30 days
 $outputDir = Join-Path $repoRoot "data\linkedin"
+$distDir = Join-Path $repoRoot "dist"
 $scrapeTimeoutSeconds = 500
 
 $portsToKill = @(8000, 8001, 8002, 8010, 8011, 8012, 8020)
@@ -84,6 +86,9 @@ Write-Host "Scraping LinkedIn and importing..."
   --hours-old $hoursOld `
   --scrape-timeout-seconds $scrapeTimeoutSeconds `
   --output-dir $outputDir
+
+Write-Host "Exporting static site to $distDir ..."
+& $venvPython .\scripts\export_static.py --output-dir $distDir
 
 $portToUse = $null
 foreach ($p in $candidatePorts) {

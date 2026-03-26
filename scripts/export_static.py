@@ -132,6 +132,7 @@ def export_static_site(*, output_dir: Path, min_score: float, min_entry_score: f
 
     (output_dir / "index.html").write_text(html, encoding="utf-8")
     (output_dir / "jobs.json").write_text(json.dumps({"jobs": jobs}, ensure_ascii=False, indent=2), encoding="utf-8")
+    (output_dir / ".nojekyll").write_text("", encoding="utf-8")
 
     print(f"Exported static site to {output_dir}")
     print(f"Open file:///{(output_dir / 'index.html').as_posix()}")

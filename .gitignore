@@ -6,7 +6,6 @@ __pycache__/
 
 data/jobs.sqlite3
 data/linkedin/
-dist/
 
 .DS_Store
 Thumbs.db
