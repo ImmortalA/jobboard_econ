@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+requests
+pydantic
+jinja2
+python-dateutil
+jobsparser

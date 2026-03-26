@@ -1,0 +1,12 @@
+.venv/
+.venv312/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+data/jobs.sqlite3
+data/linkedin/
+dist/
+
+.DS_Store
+Thumbs.db

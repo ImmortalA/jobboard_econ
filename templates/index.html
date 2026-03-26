@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jobboard Econ — Agentic + Vibe (US, last 30 days)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body id="top" class="bg-zinc-950 text-zinc-50">
+    <div class="mx-auto max-w-7xl px-4 py-10">
+      <div class="flex flex-col gap-6">
+        <header class="flex flex-col gap-2">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <h1 class="text-3xl font-semibold tracking-tight">Jobboard Econ</h1>
+              <p class="text-zinc-300">
+                US-based (job location) • last 30 days • Finance/Econ/Banking/Consulting • “agentic AI” + “vibe coding” signals
+              </p>
+            </div>
+            <div class="text-sm text-zinc-200">
+              <div><span class="text-zinc-400">DB jobs:</span> {{ stats.total }} (US: {{ stats.us_total }}, recent: {{ stats.recent_total }})</div>
+              <div><span class="text-zinc-400">Showing:</span> {{ showing_count }} of {{ matching_count }} matches</div>
+              <div><span class="text-zinc-400">Last refresh:</span> {{ last_refresh or "—" }}</div>
+              <div class="mt-2">
+                <span class="text-zinc-400">Min score:</span>
+                <code class="rounded bg-zinc-900 px-2 py-1 text-zinc-100 ring-1 ring-zinc-800">{{ min_score }}</code>
+                <span class="text-zinc-400"> (use <code class="rounded bg-zinc-900 px-1 py-0.5 ring-1 ring-zinc-800">?min_score=0.1</code>)</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+            <h2 class="text-lg font-semibold">Top titles</h2>
+            <ul class="mt-3 space-y-1 text-sm text-zinc-100">
+              {% for k,v in summary.top_titles %}
+                <li class="flex justify-between gap-3"><span class="truncate">{{ k }}</span><span class="text-zinc-400">{{ v }}</span></li>
+              {% endfor %}
+            </ul>
+            <div class="mt-5 text-sm font-semibold text-zinc-100">Top companies</div>
+            <ul class="mt-2 space-y-1 text-sm text-zinc-100">
+              {% for k,v in summary.top_companies %}
+                <li class="flex justify-between gap-3"><span class="truncate">{{ k }}</span><span class="text-zinc-400">{{ v }}</span></li>
+              {% endfor %}
+            </ul>
+          </div>
+
+          <div class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+            <h2 class="text-lg font-semibold">Top skills (overall)</h2>
+            <div class="mt-3 flex flex-wrap gap-2">
+              {% for k,v in summary.top_skills %}
+                <span class="rounded-full bg-zinc-950/60 ring-1 ring-zinc-800 px-3 py-1 text-sm">
+                  {{ k }} <span class="text-zinc-400">({{ v }})</span>
+                </span>
+              {% endfor %}
+            </div>
+            <div class="mt-5 text-sm font-semibold text-zinc-100">Agentic-skew skills</div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {% for k,v in summary.top_agentic_skills %}
+                <span class="rounded-full bg-white text-zinc-950 px-3 py-1 text-sm">
+                  {{ k }} <span class="text-zinc-600">({{ v }})</span>
+                </span>
+              {% endfor %}
+            </div>
+            <div class="mt-5 text-sm font-semibold text-zinc-100">Vibe-skew skills</div>
+            <div class="mt-2 flex flex-wrap gap-2">
+              {% for k,v in summary.top_vibe_skills %}
+                <span class="rounded-full bg-zinc-950/60 ring-1 ring-zinc-800 px-3 py-1 text-sm">
+                  {{ k }} <span class="text-zinc-400">({{ v }})</span>
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+            <h2 class="text-lg font-semibold">“Subtract summaries” (skill deltas)</h2>
+            <p class="mt-1 text-sm text-zinc-300">
+              Agentic-minus-vibe and vibe-minus-agentic using extracted skill evidence.
+            </p>
+            <div class="mt-4 grid grid-cols-1 gap-4">
+              <div>
+                <div class="text-sm font-semibold text-zinc-100">Agentic &gt; Vibe</div>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  {% for k,v in summary.delta_agentic_minus_vibe %}
+                    <span class="rounded-full bg-white text-zinc-950 px-3 py-1 text-sm">
+                      {{ k }} <span class="text-zinc-600">(+{{ v }})</span>
+                    </span>
+                  {% endfor %}
+                </div>
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-zinc-100">Vibe &gt; Agentic</div>
+                <div class="mt-2 flex flex-wrap gap-2">
+                  {% for k,v in summary.delta_vibe_minus_agentic %}
+                    <span class="rounded-full bg-zinc-950/60 ring-1 ring-zinc-800 px-3 py-1 text-sm">
+                      {{ k }} <span class="text-zinc-400">(+{{ v }})</span>
+                    </span>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+          <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between gap-4">
+            <h2 class="text-lg font-semibold">Jobs</h2>
+            {% if api_url %}
+              <a class="text-sm text-zinc-300 hover:text-white underline" href="{{ api_url }}">{{ "Download JSON" if is_static else "View JSON" }}</a>
+            {% endif %}
+          </div>
+
+          <div class="sticky top-0 z-20 px-5 py-3 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur flex flex-col gap-2">
+            <div class="flex flex-wrap gap-2 items-center text-sm text-zinc-200">
+              <span class="text-zinc-400">Jump to:</span>
+              {% for item in toc %}
+                <a class="rounded-full bg-zinc-900 ring-1 ring-zinc-800 px-3 py-1 text-xs hover:bg-zinc-800"
+                   href="#group-{{ item.name|replace('/', '-')|replace(' ', '-')|lower }}">
+                  {{ item.name }} <span class="text-zinc-400">({{ item.count }})</span>
+                </a>
+              {% endfor %}
+              <a class="ml-auto text-xs text-zinc-400 hover:text-white underline" href="#top">Back to top</a>
+            </div>
+            <div class="flex flex-wrap gap-2 items-center text-sm text-zinc-200">
+              <span class="text-zinc-400">Sort:</span>
+              {% set base = '?min_score=' ~ min_score ~ '&min_entry_score=' ~ min_entry_score %}
+              <a class="underline hover:text-white" href="{{ base }}&sort=overall">overall</a>
+              <a class="underline hover:text-white" href="{{ base }}&sort=agentic">agentic</a>
+              <a class="underline hover:text-white" href="{{ base }}&sort=vibe">vibe</a>
+              <a class="underline hover:text-white" href="{{ base }}&sort=sector">sector</a>
+              <a class="underline hover:text-white" href="{{ base }}&sort=entry">entry</a>
+            </div>
+          </div>
+
+          <div class="divide-y divide-zinc-800">
+            {% for group_name, group_jobs in grouped %}
+              <div class="p-5" id="group-{{ group_name|replace('/', '-')|replace(' ', '-')|lower }}">
+                <div class="flex items-baseline justify-between gap-4 mb-3">
+                  <h3 class="text-lg font-semibold">{{ group_name }}</h3>
+                  <span class="text-sm text-zinc-400">{{ group_jobs|length }} jobs</span>
+                </div>
+                <div class="space-y-4">
+                  {% for j in group_jobs %}
+                    <article class="rounded-xl bg-zinc-950/40 ring-1 ring-zinc-800 p-4 hover:bg-zinc-950/60 transition">
+                      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                        <div class="min-w-0">
+                          <a class="text-xl font-semibold hover:underline" href="{{ j.url }}" target="_blank" rel="noreferrer">
+                            {{ j.title }}
+                          </a>
+                          <div class="mt-1 text-sm text-zinc-200">
+                            <span class="text-zinc-400">Company:</span> {{ j.company_name }}
+                            <span class="mx-2 text-zinc-700">•</span>
+                            <span class="text-zinc-400">Location:</span> {{ j.candidate_required_location or "—" }}
+                            <span class="mx-2 text-zinc-700">•</span>
+                            <span class="text-zinc-400">Published:</span> {{ j.publication_date }}
+                          </div>
+                          <div class="mt-2 flex flex-wrap gap-2">
+                            {% for t in j.tags[:12] %}
+                              <span class="rounded-full bg-zinc-900 ring-1 ring-zinc-800 px-3 py-1 text-xs text-zinc-100">{{ t }}</span>
+                            {% endfor %}
+                          </div>
+                        </div>
+
+                        <div class="shrink-0 rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 px-4 py-3 text-sm text-zinc-100">
+                          <div><span class="text-zinc-400">overall</span> {{ "%.3f"|format(j.overall_score) }}</div>
+                          <div><span class="text-zinc-400">sector</span> {{ "%.3f"|format(j.sector_score) }}</div>
+                          <div><span class="text-zinc-400">agentic</span> {{ "%.3f"|format(j.agentic_score) }}</div>
+                          <div><span class="text-zinc-400">vibe</span> {{ "%.3f"|format(j.vibe_score) }}</div>
+                        </div>
+                      </div>
+
+                      <details class="mt-4">
+                        <summary class="cursor-pointer text-sm text-zinc-300 hover:text-white">Why matched?</summary>
+                        <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                          <div class="rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 p-3">
+                            <div class="font-semibold">Sector evidence</div>
+                            <div class="mt-2 text-zinc-200">
+                              {{ (j.reasons.sector_hits or [])|join(", ") or "—" }}
+                            </div>
+                          </div>
+                          <div class="rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 p-3">
+                            <div class="font-semibold">Agentic evidence</div>
+                            <div class="mt-2 text-zinc-200">
+                              {{ (j.reasons.agentic_hits or [])|join(", ") or "—" }}
+                            </div>
+                          </div>
+                          <div class="rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 p-3">
+                            <div class="font-semibold">Vibe evidence</div>
+                            <div class="mt-2 text-zinc-200">
+                              {{ (j.reasons.vibe_hits or [])|join(", ") or "—" }}
+                            </div>
+                          </div>
+                        </div>
+                      </details>
+                    </article>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </section>
+
+        <footer class="text-xs text-zinc-400">
+          Data source: LinkedIn (via jobsparser CSV import). This app stores parsed/summarized results locally for personal use.
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
+
