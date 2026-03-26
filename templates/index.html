@@ -3,209 +3,562 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Jobboard Econ — Agentic + Vibe (US, last 30 days)</title>
+    <title>Jobboard Econ - Practical AI Job Finder</title>
+    <meta
+      name="description"
+      content="Entry-level finance and economics jobs with practical AI workflow and AI-assisted productivity signals."
+    />
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
-  <body id="top" class="bg-zinc-950 text-zinc-50">
-    <div class="mx-auto max-w-7xl px-4 py-10">
+  <body id="top" class="bg-zinc-950 text-zinc-50 antialiased">
+    <a class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-white focus:px-3 focus:py-2 focus:text-zinc-950" href="#jobs">
+      Skip to jobs
+    </a>
+
+    <main class="mx-auto max-w-7xl px-4 py-8 md:py-10">
       <div class="flex flex-col gap-6">
-        <header class="flex flex-col gap-2">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <h1 class="text-3xl font-semibold tracking-tight">Jobboard Econ</h1>
-              <p class="text-zinc-300">
-                US-based (job location) • last 30 days • Finance/Econ/Banking/Consulting • “agentic AI” + “vibe coding” signals
+        <header class="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+          <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div class="max-w-3xl">
+              <div class="inline-flex rounded-full border border-zinc-700 bg-zinc-950/70 px-3 py-1 text-xs uppercase tracking-[0.18em] text-zinc-400">
+                Practical AI + Finance/Econ roles
+              </div>
+              <h1 class="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">Find entry-level jobs your brother can actually use</h1>
+              <p class="mt-3 text-sm leading-6 text-zinc-300 md:text-base">
+                US job location, last 30 days, finance/econ/banking/consulting relevance, hard exclusions for PhD and clearance requirements,
+                and ranking tuned toward practical AI workflow tools instead of deeply technical ML roles.
               </p>
             </div>
-            <div class="text-sm text-zinc-200">
-              <div><span class="text-zinc-400">DB jobs:</span> {{ stats.total }} (US: {{ stats.us_total }}, recent: {{ stats.recent_total }})</div>
-              <div><span class="text-zinc-400">Showing:</span> {{ showing_count }} of {{ matching_count }} matches</div>
-              <div><span class="text-zinc-400">Last refresh:</span> {{ last_refresh or "—" }}</div>
-              <div class="mt-2">
-                <span class="text-zinc-400">Min score:</span>
-                <code class="rounded bg-zinc-900 px-2 py-1 text-zinc-100 ring-1 ring-zinc-800">{{ min_score }}</code>
-                <span class="text-zinc-400"> (use <code class="rounded bg-zinc-900 px-1 py-0.5 ring-1 ring-zinc-800">?min_score=0.1</code>)</span>
+
+            <div class="grid grid-cols-2 gap-3 text-sm md:grid-cols-4">
+              <div class="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
+                <div class="text-zinc-400">DB jobs</div>
+                <div class="mt-1 text-xl font-semibold">{{ stats.total }}</div>
+              </div>
+              <div class="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
+                <div class="text-zinc-400">Matching now</div>
+                <div class="mt-1 text-xl font-semibold">{{ matching_count }}</div>
+              </div>
+              <div class="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
+                <div class="text-zinc-400">Shown on page</div>
+                <div class="mt-1 text-xl font-semibold"><span data-visible-total>{{ showing_count }}</span></div>
+              </div>
+              <div class="rounded-2xl border border-zinc-800 bg-zinc-950/80 px-4 py-3">
+                <div class="text-zinc-400">Last refresh</div>
+                <div class="mt-1 font-semibold">{{ last_refresh_relative }}</div>
+                <div class="text-xs text-zinc-500">{{ last_refresh_display }}</div>
               </div>
             </div>
           </div>
+
+          <div class="mt-5 flex flex-wrap gap-2 text-xs text-zinc-300">
+            <span class="rounded-full border border-zinc-800 bg-zinc-950/70 px-3 py-1">Min fit {{ min_score }}</span>
+            <span class="rounded-full border border-zinc-800 bg-zinc-950/70 px-3 py-1">Min entry {{ min_entry_score }}</span>
+            <span class="rounded-full border border-zinc-800 bg-zinc-950/70 px-3 py-1">US location only</span>
+            <span class="rounded-full border border-zinc-800 bg-zinc-950/70 px-3 py-1">Last 30 days</span>
+          </div>
         </header>
 
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
-            <h2 class="text-lg font-semibold">Top titles</h2>
-            <ul class="mt-3 space-y-1 text-sm text-zinc-100">
-              {% for k,v in summary.top_titles %}
-                <li class="flex justify-between gap-3"><span class="truncate">{{ k }}</span><span class="text-zinc-400">{{ v }}</span></li>
-              {% endfor %}
-            </ul>
-            <div class="mt-5 text-sm font-semibold text-zinc-100">Top companies</div>
-            <ul class="mt-2 space-y-1 text-sm text-zinc-100">
-              {% for k,v in summary.top_companies %}
-                <li class="flex justify-between gap-3"><span class="truncate">{{ k }}</span><span class="text-zinc-400">{{ v }}</span></li>
-              {% endfor %}
-            </ul>
-          </div>
-
-          <div class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
-            <h2 class="text-lg font-semibold">Top skills (overall)</h2>
-            <div class="mt-3 flex flex-wrap gap-2">
-              {% for k,v in summary.top_skills %}
-                <span class="rounded-full bg-zinc-950/60 ring-1 ring-zinc-800 px-3 py-1 text-sm">
-                  {{ k }} <span class="text-zinc-400">({{ v }})</span>
-                </span>
-              {% endfor %}
-            </div>
-            <div class="mt-5 text-sm font-semibold text-zinc-100">Agentic-skew skills</div>
-            <div class="mt-2 flex flex-wrap gap-2">
-              {% for k,v in summary.top_agentic_skills %}
-                <span class="rounded-full bg-white text-zinc-950 px-3 py-1 text-sm">
-                  {{ k }} <span class="text-zinc-600">({{ v }})</span>
-                </span>
-              {% endfor %}
-            </div>
-            <div class="mt-5 text-sm font-semibold text-zinc-100">Vibe-skew skills</div>
-            <div class="mt-2 flex flex-wrap gap-2">
-              {% for k,v in summary.top_vibe_skills %}
-                <span class="rounded-full bg-zinc-950/60 ring-1 ring-zinc-800 px-3 py-1 text-sm">
-                  {{ k }} <span class="text-zinc-400">({{ v }})</span>
-                </span>
-              {% endfor %}
-            </div>
-          </div>
-
-          <div class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 p-5 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
-            <h2 class="text-lg font-semibold">“Subtract summaries” (skill deltas)</h2>
-            <p class="mt-1 text-sm text-zinc-300">
-              Agentic-minus-vibe and vibe-minus-agentic using extracted skill evidence.
-            </p>
-            <div class="mt-4 grid grid-cols-1 gap-4">
+        <details class="rounded-3xl border border-zinc-800 bg-zinc-900/60 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+          <summary class="cursor-pointer list-none px-6 py-5">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
               <div>
-                <div class="text-sm font-semibold text-zinc-100">Agentic &gt; Vibe</div>
+                <div class="text-lg font-semibold">Market snapshot</div>
+                <p class="text-sm text-zinc-400">Collapse this when you want to focus only on the jobs.</p>
+              </div>
+              <div class="text-sm text-zinc-300">Top titles, companies, skills, and subtract summaries</div>
+            </div>
+          </summary>
+
+          <div class="grid grid-cols-1 gap-6 border-t border-zinc-800 px-6 py-6 lg:grid-cols-3">
+            <section class="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+              <h2 class="text-lg font-semibold">Top titles</h2>
+              <ul class="mt-3 space-y-1 text-sm text-zinc-100">
+                {% for k, v in summary.top_titles %}
+                  <li class="flex justify-between gap-3"><span class="truncate">{{ k }}</span><span class="text-zinc-400">{{ v }}</span></li>
+                {% endfor %}
+              </ul>
+
+              <div class="mt-5 text-sm font-semibold text-zinc-100">Top companies</div>
+              <ul class="mt-2 space-y-1 text-sm text-zinc-100">
+                {% for k, v in summary.top_companies %}
+                  <li class="flex justify-between gap-3"><span class="truncate">{{ k }}</span><span class="text-zinc-400">{{ v }}</span></li>
+                {% endfor %}
+              </ul>
+            </section>
+
+            <section class="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+              <h2 class="text-lg font-semibold">Top skills</h2>
+              <div class="mt-3 flex flex-wrap gap-2">
+                {% for k, v in summary.top_skills %}
+                  <span class="rounded-full border border-zinc-800 bg-zinc-950 px-3 py-1 text-sm">
+                    {{ k }} <span class="text-zinc-400">({{ v }})</span>
+                  </span>
+                {% endfor %}
+              </div>
+
+              <div class="mt-5 text-sm font-semibold text-zinc-100">AI workflow-skew</div>
+              <div class="mt-2 flex flex-wrap gap-2">
+                {% for k, v in summary.top_agentic_skills %}
+                  <span class="rounded-full bg-white px-3 py-1 text-sm text-zinc-950">
+                    {{ k }} <span class="text-zinc-600">({{ v }})</span>
+                  </span>
+                {% endfor %}
+              </div>
+
+              <div class="mt-5 text-sm font-semibold text-zinc-100">AI-assisted build-skew</div>
+              <div class="mt-2 flex flex-wrap gap-2">
+                {% for k, v in summary.top_vibe_skills %}
+                  <span class="rounded-full border border-zinc-800 bg-zinc-950 px-3 py-1 text-sm">
+                    {{ k }} <span class="text-zinc-400">({{ v }})</span>
+                  </span>
+                {% endfor %}
+              </div>
+            </section>
+
+            <section class="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+              <h2 class="text-lg font-semibold">Subtract summaries</h2>
+              <p class="mt-1 text-sm text-zinc-300">Skills that show up more often on one side than the other.</p>
+
+              <div class="mt-4">
+                <div class="text-sm font-semibold text-zinc-100">AI workflow &gt; AI-assisted build</div>
                 <div class="mt-2 flex flex-wrap gap-2">
-                  {% for k,v in summary.delta_agentic_minus_vibe %}
-                    <span class="rounded-full bg-white text-zinc-950 px-3 py-1 text-sm">
+                  {% for k, v in summary.delta_agentic_minus_vibe %}
+                    <span class="rounded-full bg-white px-3 py-1 text-sm text-zinc-950">
                       {{ k }} <span class="text-zinc-600">(+{{ v }})</span>
                     </span>
                   {% endfor %}
                 </div>
               </div>
-              <div>
-                <div class="text-sm font-semibold text-zinc-100">Vibe &gt; Agentic</div>
+
+              <div class="mt-5">
+                <div class="text-sm font-semibold text-zinc-100">AI-assisted build &gt; AI workflow</div>
                 <div class="mt-2 flex flex-wrap gap-2">
-                  {% for k,v in summary.delta_vibe_minus_agentic %}
-                    <span class="rounded-full bg-zinc-950/60 ring-1 ring-zinc-800 px-3 py-1 text-sm">
+                  {% for k, v in summary.delta_vibe_minus_agentic %}
+                    <span class="rounded-full border border-zinc-800 bg-zinc-950 px-3 py-1 text-sm">
                       {{ k }} <span class="text-zinc-400">(+{{ v }})</span>
                     </span>
                   {% endfor %}
                 </div>
               </div>
+            </section>
+          </div>
+        </details>
+
+        <section id="jobs" class="rounded-3xl border border-zinc-800 bg-zinc-900/60 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
+          <div class="border-b border-zinc-800 px-5 py-4 md:px-6">
+            <div class="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <h2 class="text-xl font-semibold">Jobs</h2>
+                <p class="mt-1 text-sm text-zinc-400">
+                  Search locally on this page, filter by category, and sort without reloading.
+                </p>
+              </div>
+              <div class="flex flex-wrap items-center gap-3 text-sm text-zinc-300">
+                <div><span class="text-zinc-500">Visible:</span> <span data-visible-total>{{ showing_count }}</span></div>
+                <div><span class="text-zinc-500">Matched:</span> {{ matching_count }}</div>
+                {% if api_url %}
+                  <a class="underline hover:text-white" href="{{ api_url }}">{{ "Download JSON" if is_static else "View JSON" }}</a>
+                {% endif %}
+              </div>
             </div>
           </div>
-        </section>
 
-        <section class="rounded-2xl bg-zinc-900/60 ring-1 ring-zinc-800 shadow-[0_1px_0_0_rgba(255,255,255,0.04)]">
-          <div class="px-5 py-4 border-b border-zinc-800 flex items-center justify-between gap-4">
-            <h2 class="text-lg font-semibold">Jobs</h2>
-            {% if api_url %}
-              <a class="text-sm text-zinc-300 hover:text-white underline" href="{{ api_url }}">{{ "Download JSON" if is_static else "View JSON" }}</a>
+          <div class="sticky top-0 z-20 border-b border-zinc-800 bg-zinc-950/90 px-5 py-4 backdrop-blur md:px-6">
+            <div class="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,2fr),minmax(0,1fr),minmax(0,1fr),auto]">
+              <label class="flex flex-col gap-1 text-sm">
+                <span class="text-zinc-400">Search titles, companies, locations, skills</span>
+                <input
+                  id="search-input"
+                  type="search"
+                  placeholder="Try analyst, banking, cursor, prompt, consulting..."
+                  class="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none ring-0 placeholder:text-zinc-500 focus:border-zinc-600"
+                />
+              </label>
+
+              <label class="flex flex-col gap-1 text-sm">
+                <span class="text-zinc-400">Fit filter</span>
+                <select
+                  id="fit-filter"
+                  class="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none focus:border-zinc-600"
+                >
+                  {% for preset in fit_presets %}
+                    <option value="{{ preset.value }}">{{ preset.label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <label class="flex flex-col gap-1 text-sm">
+                <span class="text-zinc-400">Sort</span>
+                <select
+                  id="sort-select"
+                  class="rounded-2xl border border-zinc-800 bg-zinc-900 px-4 py-3 text-zinc-100 outline-none focus:border-zinc-600"
+                >
+                  {% for option in sort_options %}
+                    <option value="{{ option.value }}" {% if option.value == sort %}selected{% endif %}>{{ option.label }}</option>
+                  {% endfor %}
+                </select>
+              </label>
+
+              <div class="flex items-end gap-2">
+                <a class="rounded-2xl border border-zinc-800 px-4 py-3 text-sm text-zinc-300 hover:bg-zinc-900 hover:text-white" href="#top">Back to top</a>
+                <button
+                  id="clear-filters"
+                  type="button"
+                  class="rounded-2xl bg-white px-4 py-3 text-sm font-medium text-zinc-950 hover:bg-zinc-200"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+
+            <div class="mt-3 flex flex-wrap gap-2">
+              <button
+                type="button"
+                data-group-filter="all"
+                class="rounded-full border border-zinc-700 bg-white px-3 py-1.5 text-xs font-medium text-zinc-950"
+              >
+                All groups <span class="text-zinc-600">({{ showing_count }})</span>
+              </button>
+              {% for item in toc %}
+                <button
+                  type="button"
+                  data-group-filter="{{ item.slug }}"
+                  class="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-200 hover:bg-zinc-800"
+                >
+                  {{ item.name }} <span class="text-zinc-400">({{ item.count }})</span>
+                </button>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="px-5 py-4 md:px-6">
+            <div class="mb-4 rounded-2xl border border-zinc-800 bg-zinc-950/70 px-4 py-3 text-sm text-zinc-300">
+              <span class="font-medium text-zinc-100">How to read this:</span>
+              `Fit` is the combined score, `AI workflow` means practical use of tools and automation, and `AI-assisted build` is closer to Cursor/Copilot-style productivity.
+            </div>
+
+            <div id="empty-state" class="hidden rounded-2xl border border-dashed border-zinc-700 bg-zinc-950/60 px-5 py-10 text-center">
+              <div class="text-lg font-semibold">No jobs match these page filters</div>
+              <p class="mt-2 text-sm text-zinc-400">Try clearing the search, switching categories, or choosing a looser fit filter.</p>
+            </div>
+
+            {% if grouped %}
+              <div class="space-y-5">
+                {% for group_name, group_jobs in grouped %}
+                  <section
+                    class="group-section rounded-2xl border border-zinc-800 bg-zinc-950/35"
+                    id="group-{{ group_jobs[0].group_slug }}"
+                    data-group-section
+                    data-group="{{ group_jobs[0].group_slug }}"
+                    data-total="{{ group_jobs|length }}"
+                  >
+                    <div class="flex flex-col gap-2 border-b border-zinc-800 px-5 py-4 md:flex-row md:items-end md:justify-between">
+                      <div>
+                        <h3 class="text-lg font-semibold">{{ group_name }}</h3>
+                        <p class="text-sm text-zinc-400">Jobs with titles that look like {{ group_name|lower }} roles.</p>
+                      </div>
+                      <div class="text-sm text-zinc-400" data-group-count>{{ group_jobs|length }} jobs</div>
+                    </div>
+
+                    <div class="space-y-4 p-4 md:p-5" data-card-list>
+                      {% for j in group_jobs %}
+                        <article
+                          data-job-card
+                          data-group="{{ j.group_slug }}"
+                          data-search="{{ j.search_blob }}"
+                          data-overall="{{ "%.6f"|format(j.overall_score) }}"
+                          data-entry="{{ "%.6f"|format(j.entry_score) }}"
+                          data-agentic="{{ "%.6f"|format(j.agentic_score) }}"
+                          data-vibe="{{ "%.6f"|format(j.vibe_score) }}"
+                          data-sector="{{ "%.6f"|format(j.sector_score) }}"
+                          data-pub="{{ j.published_ts }}"
+                          data-title="{{ j.title|lower }}"
+                          data-company="{{ j.company_name|lower }}"
+                          class="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 transition hover:border-zinc-700 hover:bg-zinc-950"
+                        >
+                          <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                            <div class="min-w-0 flex-1">
+                              <div class="flex flex-wrap items-center gap-2">
+                                {% if j.fit_tone == "emerald" %}
+                                  <span class="rounded-full bg-emerald-400/15 px-3 py-1 text-xs font-medium text-emerald-300 ring-1 ring-emerald-400/30">{{ j.fit_label }}</span>
+                                {% elif j.fit_tone == "sky" %}
+                                  <span class="rounded-full bg-sky-400/15 px-3 py-1 text-xs font-medium text-sky-300 ring-1 ring-sky-400/30">{{ j.fit_label }}</span>
+                                {% elif j.fit_tone == "amber" %}
+                                  <span class="rounded-full bg-amber-400/15 px-3 py-1 text-xs font-medium text-amber-300 ring-1 ring-amber-400/30">{{ j.fit_label }}</span>
+                                {% else %}
+                                  <span class="rounded-full bg-zinc-400/10 px-3 py-1 text-xs font-medium text-zinc-300 ring-1 ring-zinc-700">{{ j.fit_label }}</span>
+                                {% endif %}
+
+                                {% if j.job_type %}
+                                  <span class="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs text-zinc-300">{{ j.job_type }}</span>
+                                {% endif %}
+                                {% if j.salary %}
+                                  <span class="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs text-zinc-300">{{ j.salary }}</span>
+                                {% endif %}
+                              </div>
+
+                              <a
+                                class="mt-3 block text-xl font-semibold leading-tight text-white hover:underline"
+                                href="{{ j.url }}"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                              >
+                                {{ j.title }}
+                              </a>
+
+                              <div class="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-zinc-300">
+                                <span><span class="text-zinc-500">Company:</span> {{ j.company_name }}</span>
+                                <span><span class="text-zinc-500">Location:</span> {{ j.candidate_required_location or "—" }}</span>
+                                <span title="{{ j.display_date }}"><span class="text-zinc-500">Posted:</span> {{ j.published_relative }}</span>
+                              </div>
+
+                              {% if j.evidence_chips %}
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                  {% for chip in j.evidence_chips %}
+                                    <span class="rounded-full border border-zinc-800 bg-zinc-900/80 px-3 py-1 text-xs text-zinc-200">{{ chip }}</span>
+                                  {% endfor %}
+                                </div>
+                              {% endif %}
+
+                              {% if j.description_preview %}
+                                <p class="mt-3 text-sm leading-6 text-zinc-300">{{ j.description_preview }}</p>
+                              {% endif %}
+
+                              {% if j.tags %}
+                                <div class="mt-3 flex flex-wrap gap-2">
+                                  {% for t in j.tags[:8] %}
+                                    <span class="rounded-full border border-zinc-800 bg-zinc-950 px-3 py-1 text-xs text-zinc-400">{{ t }}</span>
+                                  {% endfor %}
+                                </div>
+                              {% endif %}
+                            </div>
+
+                            <aside class="w-full shrink-0 rounded-2xl border border-zinc-800 bg-zinc-900/70 p-4 text-sm lg:w-64">
+                              <div class="text-xs uppercase tracking-[0.16em] text-zinc-500">Match summary</div>
+                              <div class="mt-3 grid grid-cols-2 gap-3">
+                                <div>
+                                  <div class="text-zinc-400">Fit</div>
+                                  <div class="text-lg font-semibold">{{ "%.3f"|format(j.overall_score) }}</div>
+                                </div>
+                                <div>
+                                  <div class="text-zinc-400">Entry fit</div>
+                                  <div class="text-lg font-semibold">{{ "%.3f"|format(j.entry_score) }}</div>
+                                </div>
+                                <div>
+                                  <div class="text-zinc-400">AI workflow</div>
+                                  <div class="text-lg font-semibold">{{ "%.3f"|format(j.agentic_score) }}</div>
+                                </div>
+                                <div>
+                                  <div class="text-zinc-400">AI-assisted build</div>
+                                  <div class="text-lg font-semibold">{{ "%.3f"|format(j.vibe_score) }}</div>
+                                </div>
+                              </div>
+
+                              <a
+                                class="mt-4 inline-flex w-full items-center justify-center rounded-xl bg-white px-4 py-3 font-medium text-zinc-950 hover:bg-zinc-200"
+                                href="{{ j.url }}"
+                                target="_blank"
+                                rel="noreferrer noopener"
+                              >
+                                Open job
+                              </a>
+                            </aside>
+                          </div>
+
+                          <details class="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+                            <summary class="cursor-pointer text-sm font-medium text-zinc-200">See match details</summary>
+                            <div class="mt-4 grid grid-cols-1 gap-3 md:grid-cols-4 text-sm">
+                              <div class="rounded-xl border border-zinc-800 bg-zinc-950/60 p-3">
+                                <div class="font-semibold text-zinc-100">Finance relevance</div>
+                                <div class="mt-2 text-zinc-300">{{ (j.reasons.sector_hits or [])|join(", ") or "—" }}</div>
+                              </div>
+                              <div class="rounded-xl border border-zinc-800 bg-zinc-950/60 p-3">
+                                <div class="font-semibold text-zinc-100">AI workflow evidence</div>
+                                <div class="mt-2 text-zinc-300">{{ (j.reasons.agentic_hits or [])|join(", ") or "—" }}</div>
+                              </div>
+                              <div class="rounded-xl border border-zinc-800 bg-zinc-950/60 p-3">
+                                <div class="font-semibold text-zinc-100">AI-assisted build evidence</div>
+                                <div class="mt-2 text-zinc-300">{{ (j.reasons.vibe_hits or [])|join(", ") or "—" }}</div>
+                              </div>
+                              <div class="rounded-xl border border-zinc-800 bg-zinc-950/60 p-3">
+                                <div class="font-semibold text-zinc-100">Entry evidence</div>
+                                <div class="mt-2 text-zinc-300">{{ (j.reasons.entry_level_hits or [])|join(", ") or "—" }}</div>
+                              </div>
+                            </div>
+                          </details>
+                        </article>
+                      {% endfor %}
+                    </div>
+                  </section>
+                {% endfor %}
+              </div>
+            {% else %}
+              <div class="rounded-2xl border border-dashed border-zinc-700 bg-zinc-950/60 px-5 py-10 text-center">
+                <div class="text-lg font-semibold">No jobs found yet</div>
+                <p class="mt-2 text-sm text-zinc-400">Run the refresh script again or lower the score thresholds.</p>
+              </div>
             {% endif %}
           </div>
-
-          <div class="sticky top-0 z-20 px-5 py-3 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur flex flex-col gap-2">
-            <div class="flex flex-wrap gap-2 items-center text-sm text-zinc-200">
-              <span class="text-zinc-400">Jump to:</span>
-              {% for item in toc %}
-                <a class="rounded-full bg-zinc-900 ring-1 ring-zinc-800 px-3 py-1 text-xs hover:bg-zinc-800"
-                   href="#group-{{ item.name|replace('/', '-')|replace(' ', '-')|lower }}">
-                  {{ item.name }} <span class="text-zinc-400">({{ item.count }})</span>
-                </a>
-              {% endfor %}
-              <a class="ml-auto text-xs text-zinc-400 hover:text-white underline" href="#top">Back to top</a>
-            </div>
-            <div class="flex flex-wrap gap-2 items-center text-sm text-zinc-200">
-              <span class="text-zinc-400">Sort:</span>
-              {% set base = '?min_score=' ~ min_score ~ '&min_entry_score=' ~ min_entry_score %}
-              <a class="underline hover:text-white" href="{{ base }}&sort=overall">overall</a>
-              <a class="underline hover:text-white" href="{{ base }}&sort=agentic">agentic</a>
-              <a class="underline hover:text-white" href="{{ base }}&sort=vibe">vibe</a>
-              <a class="underline hover:text-white" href="{{ base }}&sort=sector">sector</a>
-              <a class="underline hover:text-white" href="{{ base }}&sort=entry">entry</a>
-            </div>
-          </div>
-
-          <div class="divide-y divide-zinc-800">
-            {% for group_name, group_jobs in grouped %}
-              <div class="p-5" id="group-{{ group_name|replace('/', '-')|replace(' ', '-')|lower }}">
-                <div class="flex items-baseline justify-between gap-4 mb-3">
-                  <h3 class="text-lg font-semibold">{{ group_name }}</h3>
-                  <span class="text-sm text-zinc-400">{{ group_jobs|length }} jobs</span>
-                </div>
-                <div class="space-y-4">
-                  {% for j in group_jobs %}
-                    <article class="rounded-xl bg-zinc-950/40 ring-1 ring-zinc-800 p-4 hover:bg-zinc-950/60 transition">
-                      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
-                        <div class="min-w-0">
-                          <a class="text-xl font-semibold hover:underline" href="{{ j.url }}" target="_blank" rel="noreferrer">
-                            {{ j.title }}
-                          </a>
-                          <div class="mt-1 text-sm text-zinc-200">
-                            <span class="text-zinc-400">Company:</span> {{ j.company_name }}
-                            <span class="mx-2 text-zinc-700">•</span>
-                            <span class="text-zinc-400">Location:</span> {{ j.candidate_required_location or "—" }}
-                            <span class="mx-2 text-zinc-700">•</span>
-                            <span class="text-zinc-400">Published:</span> {{ j.publication_date }}
-                          </div>
-                          <div class="mt-2 flex flex-wrap gap-2">
-                            {% for t in j.tags[:12] %}
-                              <span class="rounded-full bg-zinc-900 ring-1 ring-zinc-800 px-3 py-1 text-xs text-zinc-100">{{ t }}</span>
-                            {% endfor %}
-                          </div>
-                        </div>
-
-                        <div class="shrink-0 rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 px-4 py-3 text-sm text-zinc-100">
-                          <div><span class="text-zinc-400">overall</span> {{ "%.3f"|format(j.overall_score) }}</div>
-                          <div><span class="text-zinc-400">sector</span> {{ "%.3f"|format(j.sector_score) }}</div>
-                          <div><span class="text-zinc-400">agentic</span> {{ "%.3f"|format(j.agentic_score) }}</div>
-                          <div><span class="text-zinc-400">vibe</span> {{ "%.3f"|format(j.vibe_score) }}</div>
-                        </div>
-                      </div>
-
-                      <details class="mt-4">
-                        <summary class="cursor-pointer text-sm text-zinc-300 hover:text-white">Why matched?</summary>
-                        <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
-                          <div class="rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 p-3">
-                            <div class="font-semibold">Sector evidence</div>
-                            <div class="mt-2 text-zinc-200">
-                              {{ (j.reasons.sector_hits or [])|join(", ") or "—" }}
-                            </div>
-                          </div>
-                          <div class="rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 p-3">
-                            <div class="font-semibold">Agentic evidence</div>
-                            <div class="mt-2 text-zinc-200">
-                              {{ (j.reasons.agentic_hits or [])|join(", ") or "—" }}
-                            </div>
-                          </div>
-                          <div class="rounded-xl bg-zinc-950/60 ring-1 ring-zinc-800 p-3">
-                            <div class="font-semibold">Vibe evidence</div>
-                            <div class="mt-2 text-zinc-200">
-                              {{ (j.reasons.vibe_hits or [])|join(", ") or "—" }}
-                            </div>
-                          </div>
-                        </div>
-                      </details>
-                    </article>
-                  {% endfor %}
-                </div>
-              </div>
-            {% endfor %}
-          </div>
         </section>
 
-        <footer class="text-xs text-zinc-400">
-          Data source: LinkedIn (via jobsparser CSV import). This app stores parsed/summarized results locally for personal use.
+        <footer class="text-xs text-zinc-500">
+          Data source: LinkedIn (via jobsparser CSV import). This app stores parsed and filtered results locally for personal use.
         </footer>
       </div>
-    </div>
+    </main>
+
+    <script>
+      (() => {
+        const searchInput = document.getElementById("search-input");
+        const fitFilter = document.getElementById("fit-filter");
+        const sortSelect = document.getElementById("sort-select");
+        const clearButton = document.getElementById("clear-filters");
+        const emptyState = document.getElementById("empty-state");
+        const visibleTotals = Array.from(document.querySelectorAll("[data-visible-total]"));
+        const groupButtons = Array.from(document.querySelectorAll("[data-group-filter]"));
+        const sections = Array.from(document.querySelectorAll("[data-group-section]"));
+
+        if (!searchInput || !fitFilter || !sortSelect || !clearButton) {
+          return;
+        }
+
+        const presetThresholds = {
+          {% for preset in fit_presets %}
+          "{{ preset.value }}": { overall: {{ preset.min_overall }}, entry: {{ preset.min_entry }} },
+          {% endfor %}
+        };
+
+        let selectedGroup = "all";
+
+        const params = new URLSearchParams(window.location.search);
+        const groupParam = params.get("group");
+        const fitParam = params.get("fit");
+        const sortParam = params.get("sort");
+        const queryParam = params.get("q");
+
+        if (queryParam) {
+          searchInput.value = queryParam;
+        }
+        if (fitParam && presetThresholds[fitParam]) {
+          fitFilter.value = fitParam;
+        } else {
+          fitFilter.value = "shown";
+        }
+        if (sortParam && Array.from(sortSelect.options).some((o) => o.value === sortParam)) {
+          sortSelect.value = sortParam;
+        } else {
+          sortSelect.value = "{{ sort }}";
+        }
+        if (groupParam && groupButtons.some((btn) => btn.dataset.groupFilter === groupParam)) {
+          selectedGroup = groupParam;
+        }
+
+        function syncUrl() {
+          const next = new URLSearchParams(window.location.search);
+          const query = searchInput.value.trim();
+          if (query) next.set("q", query); else next.delete("q");
+          if (fitFilter.value && fitFilter.value !== "shown") next.set("fit", fitFilter.value); else next.delete("fit");
+          if (sortSelect.value) next.set("sort", sortSelect.value);
+          if (selectedGroup !== "all") next.set("group", selectedGroup); else next.delete("group");
+          const nextUrl = `${window.location.pathname}?${next.toString()}${window.location.hash}`;
+          window.history.replaceState({}, "", nextUrl);
+        }
+
+        function updateGroupButtons() {
+          groupButtons.forEach((button) => {
+            const active = button.dataset.groupFilter === selectedGroup;
+            button.setAttribute("aria-pressed", active ? "true" : "false");
+            button.classList.toggle("bg-white", active);
+            button.classList.toggle("text-zinc-950", active);
+            button.classList.toggle("border-zinc-700", !active);
+            button.classList.toggle("bg-zinc-900", !active);
+            button.classList.toggle("text-zinc-200", !active);
+          });
+        }
+
+        function compareCards(a, b, mode) {
+          const numberDesc = (key) => Number(b.dataset[key] || 0) - Number(a.dataset[key] || 0);
+          if (mode === "pub") return numberDesc("pub");
+          if (mode === "entry") return numberDesc("entry");
+          if (mode === "agentic") return numberDesc("agentic");
+          if (mode === "vibe") return numberDesc("vibe");
+          if (mode === "sector") return numberDesc("sector");
+          return numberDesc("overall");
+        }
+
+        function matchesPreset(card) {
+          const preset = presetThresholds[fitFilter.value] || presetThresholds.shown;
+          return Number(card.dataset.overall || 0) >= preset.overall && Number(card.dataset.entry || 0) >= preset.entry;
+        }
+
+        function applyFilters() {
+          const query = searchInput.value.trim().toLowerCase();
+          const sortMode = sortSelect.value || "overall";
+
+          let visibleTotal = 0;
+
+          sections.forEach((section) => {
+            const cardList = section.querySelector("[data-card-list]");
+            const cards = Array.from(section.querySelectorAll("[data-job-card]"));
+            const total = cards.length;
+
+            cards.sort((a, b) => compareCards(a, b, sortMode));
+            cards.forEach((card) => cardList.appendChild(card));
+
+            let visibleInSection = 0;
+            cards.forEach((card) => {
+              const matchesQuery = !query || (card.dataset.search || "").includes(query);
+              const matchesGroup = selectedGroup === "all" || card.dataset.group === selectedGroup;
+              const visible = matchesQuery && matchesGroup && matchesPreset(card);
+              card.classList.toggle("hidden", !visible);
+              if (visible) visibleInSection += 1;
+            });
+
+            section.classList.toggle("hidden", visibleInSection === 0);
+            visibleTotal += visibleInSection;
+
+            const countEl = section.querySelector("[data-group-count]");
+            if (countEl) {
+              countEl.textContent = visibleInSection === total ? `${total} jobs` : `${visibleInSection} shown of ${total}`;
+            }
+          });
+
+          visibleTotals.forEach((el) => {
+            el.textContent = String(visibleTotal);
+          });
+          emptyState.classList.toggle("hidden", visibleTotal !== 0);
+          updateGroupButtons();
+          syncUrl();
+        }
+
+        groupButtons.forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedGroup = button.dataset.groupFilter || "all";
+            applyFilters();
+            const targetId = selectedGroup === "all" ? "jobs" : `group-${selectedGroup}`;
+            const target = document.getElementById(targetId);
+            if (target) {
+              target.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          });
+        });
+
+        searchInput.addEventListener("input", applyFilters);
+        fitFilter.addEventListener("change", applyFilters);
+        sortSelect.addEventListener("change", applyFilters);
+        clearButton.addEventListener("click", () => {
+          searchInput.value = "";
+          fitFilter.value = "shown";
+          sortSelect.value = "{{ sort }}";
+          selectedGroup = "all";
+          applyFilters();
+        });
+
+        updateGroupButtons();
+        applyFilters();
+      })();
+    </script>
   </body>
 </html>
 
